@@ -23,6 +23,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.code === 'ERR_NETWORK') {
+      error.message = 'Unable to connect to the LearnConnect server. Check that the backend is running and VITE_API_URL is correct.';
+    }
+
     // Only redirect if 401 occurs on protected endpoints, not during login/register!
     const isAuthEndpoint = error.config?.url?.includes('/auth/login') || error.config?.url?.includes('/auth/register');
     if (error.response?.status === 401 && !isAuthEndpoint) {
